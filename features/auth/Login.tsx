@@ -1,7 +1,7 @@
 export const Login = () => {
   return (
     <section className="flex min-h-screen items-center justify-center">
-      <div className="flex w-[350px] flex-col gap-12 rounded-md border p-8">
+      <div className="flex w-[350px] flex-col gap-12 rounded-md border p-6">
         <div>logo</div>
         <form className="flex flex-col gap-4">
           <input
