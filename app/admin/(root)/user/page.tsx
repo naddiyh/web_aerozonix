@@ -1,3 +1,3 @@
 export default function User() {
-  return <main>user</main>;
+  return <main>tes ini user</main>;
 }
