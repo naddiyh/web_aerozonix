@@ -1,3 +1,5 @@
-export default function User() {
-  return <main>tes ini user</main>;
+import { User } from "@/features/user";
+
+export default function page() {
+  return <User />;
 }

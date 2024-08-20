@@ -1,3 +1,5 @@
-export default function Map() {
-  return <main>Ini map</main>;
+import { Map } from "@/features/map";
+
+export default function page() {
+  return <Map />;
 }

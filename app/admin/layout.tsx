@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <main className="flex">
       <SideBar />
-      <section className="">{children}</section>
+      <section className="w-full bg-primary-bluewhite">{children}</section>
     </main>
   );
 }
