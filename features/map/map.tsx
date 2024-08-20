@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export const Map = () => {
   return (
-    <div className="bg-primary-bluewhite p-12">
+    <div className="p-12">
       <div className="flex justify-between">
         <div className="flex gap-4">
           <button className="h-fit rounded-md bg-white px-2 py-1 text-sm font-semibold">
