@@ -117,8 +117,30 @@ const SimpleMap = ({
       radiusStationFeature,
     ]);
 
+    const droneCoor = fromLonLat([center.lat - 0.0009, center.lon + 0.0005]);
+    const droneFeature = new Feature({
+      geometry: new Point(droneCoor),
+    });
+    droneFeature.setStyle(
+      new Style({
+        image: new Icon({
+          src: "/map/DroneIcon.png",
+          scale: 0.2,
+        }),
+        zIndex: 1,
+      }),
+    );
+    const droneFeatureRadius = new Feature({
+      geometry: new Circle(droneCoor, 70),
+    });
+    droneFeatureRadius.setStyle(
+      new Style({
+        fill: new Fill({ color: "#02A5EC30" }),
+      }),
+    );
+    vectorSource.addFeatures([droneFeature, droneFeatureRadius]);
+
     coPoints.forEach(({ co, coor }: coPoint) => {
-      console.log(co);
       const coPointCoor = fromLonLat([coor.lat, coor.lon]);
       const coPointFeature = new Feature({
         geometry: new Point(coPointCoor),
