@@ -1,6 +1,8 @@
 import { IDataDrone } from "@/interfaces";
 
 export const TempDataDroneA: IDataDrone = {
+  maxFlightTime: 20,
+  timeCleaning: 5,
   chargeStation: {
     lat: 119.4702209,
     lon: -5.14661,

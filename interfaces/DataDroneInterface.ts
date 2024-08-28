@@ -9,6 +9,8 @@ export type coPoint = {
 };
 
 export type IDataDrone = {
+  maxFlightTime: number;
+  timeCleaning: number;
   radius: number;
   chargeStation: xyCoor;
   coPoints: coPoint[];
