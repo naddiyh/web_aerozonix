@@ -1,5 +1,6 @@
 import { AerozonixMapWatermark, InfoCOMap } from "@/components/map";
 import { TempDataDroneA } from "@/lib/data/dataDrone";
+import findOptimalPath from "@/lib/utils/findOptimalPath";
 import dynamic from "next/dynamic";
 import { FaChevronDown } from "react-icons/fa6";
 
@@ -12,6 +13,13 @@ export const Map = () => {
   const center = TempDataDroneA.chargeStation;
   const coPoints = TempDataDroneA.coPoints;
   const radius = TempDataDroneA.radius;
+
+  const path = findOptimalPath(
+    TempDataDroneA.timeCleaning,
+    center,
+    TempDataDroneA.maxFlightTime,
+    coPoints,
+  );
 
   return (
     <div className="px-12 py-6">
@@ -32,13 +40,12 @@ export const Map = () => {
         </div>
       </div>
       <div className="my-4">
-        <div className="relative h-[75vh] w-full rounded-md bg-gradient-to-br from-white via-slate-50 to-white">
-          <AerozonixMapWatermark />
-          <InfoCOMap />
-          <div className="h-full w-full overflow-clip rounded-md">
-            <MapComponent center={center} coPoints={coPoints} radius={radius} />
-          </div>
-        </div>
+        <MapComponent
+          center={center}
+          coPoints={coPoints}
+          radius={radius}
+          path={path}
+        />
       </div>
     </div>
   );

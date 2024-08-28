@@ -3,7 +3,7 @@
 // components/SimpleMap.js
 import React, { useEffect, useRef } from "react";
 import "ol/ol.css";
-import { Map, View } from "ol";
+import { Map, Overlay, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { XYZ } from "ol/source";
 import { fromLonLat } from "ol/proj";
@@ -22,17 +22,22 @@ import LineString from "ol/geom/LineString";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { coPoint, xyCoor } from "@/interfaces";
+import { AerozonixMapWatermark } from "./AerozonixMapWatermark";
+import { InfoCOMap } from "./InfoCOMap";
 
 const SimpleMap = ({
   center,
   coPoints,
   radius,
+  path,
 }: {
   center: xyCoor;
   coPoints: coPoint[];
   radius: number;
+  path: any; // define this, not best practice
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const olMap = new Map({
@@ -120,6 +125,7 @@ const SimpleMap = ({
     const droneCoor = fromLonLat([center.lat - 0.0009, center.lon + 0.0005]);
     const droneFeature = new Feature({
       geometry: new Point(droneCoor),
+      name: "Drone A01",
     });
     droneFeature.setStyle(
       new Style({
@@ -166,6 +172,49 @@ const SimpleMap = ({
       vectorSource.addFeature(coPointFeature);
     });
 
+    const pathStartLine = new Feature({
+      geometry: new LineString([
+        droneCoor,
+        fromLonLat([path[0].coor.lat, path[0].coor.lon]),
+      ]),
+    });
+
+    pathStartLine.setStyle(
+      new Style({
+        stroke: new Stroke({
+          width: 2,
+        }),
+      }),
+    );
+    vectorSource.addFeature(pathStartLine);
+
+    // Convert the array of lat/lon to an array of OpenLayers coordinates
+    const olCoordinates = path.map((item: any) =>
+      fromLonLat([item.coor.lat, item.coor.lon]),
+    );
+
+    // Create a LineString geometry from the coordinates
+    const lineString = new LineString(olCoordinates);
+
+    // Create a feature with the LineString geometry
+    const pathLine = new Feature({
+      geometry: lineString,
+    });
+
+    // Style for the line
+    pathLine.setStyle(
+      new Style({
+        stroke: new Stroke({
+          lineJoin: "round",
+          color: "#3FAAE4",
+          lineDash: [10],
+          width: 2,
+        }),
+      }),
+    );
+
+    vectorSource.addFeature(pathLine);
+
     // Add all features to a vector layer
     const vectorLayer = new VectorLayer({
       source: vectorSource,
@@ -173,11 +222,45 @@ const SimpleMap = ({
 
     olMap.addLayer(vectorLayer);
 
+    // Add overlay for the popup
+    const popupOverlay = new Overlay({
+      element: popupRef.current!,
+      positioning: "top-center",
+      stopEvent: false,
+      offset: [0, -50],
+    });
+    olMap.addOverlay(popupOverlay);
+
+    // Event listener for hover effect
+    olMap.on("pointermove", (event) => {
+      const feature = olMap.forEachFeatureAtPixel(event.pixel, (feat) => feat);
+      if (feature === droneFeature) {
+        const coordinates = event.coordinate;
+        popupOverlay.setPosition(coordinates);
+        popupRef.current!.innerHTML = `${feature.get("name")}`; // Customize popup content here
+        popupRef.current!.style.display = "block";
+      } else {
+        popupRef.current!.style.display = "none";
+      }
+    });
+
     // Clean up on component unmount
     return () => olMap.setTarget(undefined);
-  }, [center, radius]);
+  }, [center, radius, coPoints, path]);
 
-  return <div ref={mapRef} className="h-full w-full bg-clip-content" />;
+  return (
+    <div className="relative h-[75vh] w-full rounded-md bg-gradient-to-br from-white via-slate-50 to-white">
+      <AerozonixMapWatermark />
+      <InfoCOMap />
+      <div className="h-full w-full overflow-clip rounded-md">
+        <div ref={mapRef} className="h-full w-full bg-clip-content" />
+        <div
+          ref={popupRef}
+          className="cursor-pointer rounded-md border border-white bg-white/50 px-4 py-2 text-sm font-semibold text-primary-darkblue backdrop-blur"
+        />
+      </div>
+    </div>
+  );
 };
 
 export default SimpleMap;
