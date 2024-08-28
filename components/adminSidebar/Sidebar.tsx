@@ -16,15 +16,18 @@ export const SideBar = () => {
       <div className="flex justify-center">
         <Image src="/svg/logo.svg" width={100} height={100} alt="" />
       </div>
-      <section className="flex flex-col gap-8 px-10 py-10">
+      <section className="flex flex-col gap-6 py-10">
         {navlink.map((item, index) => (
-          <div key={index} className="flex flex-col gap-6">
-            <div className="flex flex-col">
-              <div
-                className="flex cursor-pointer items-center gap-4"
+          <div key={index} className="flex flex-col">
+            <div className="flex w-full flex-col justify-center pl-6">
+              <button
+                className="flex items-center gap-4 rounded-md py-2 pl-6 pr-10 duration-200 ease-in-out hover:bg-blue-900"
                 onClick={() => handleToggle(index)}
               >
-                <Link href={item.href} className="flex items-center gap-4">
+                <Link
+                  href={item.href}
+                  className="flex w-full items-center gap-4"
+                >
                   {item.icon && <item.icon className="h-4 w-4 text-white" />}
 
                   <span className="text-white">{item.title}</span>
@@ -38,12 +41,15 @@ export const SideBar = () => {
                     )}
                   </div>
                 )}
-              </div>
+              </button>
 
               {item.sublink && expandedIndex === index && (
-                <div className="flex flex-col gap-8 pl-8 pt-8 text-white">
+                <div className="flex transform flex-col gap-4 pl-6 pt-4 text-white duration-300 ease-in-out">
                   {item.sublink.map((subitem, subindex) => (
-                    <div key={subindex} className="flex items-center gap-6">
+                    <div
+                      key={subindex}
+                      className="flex items-center gap-4 rounded-md py-2 pl-8 duration-200 ease-in-out hover:bg-blue-900"
+                    >
                       <Link href={subitem.href}>
                         {subitem.icon && <subitem.icon className="h-4 w-4" />}
                       </Link>
