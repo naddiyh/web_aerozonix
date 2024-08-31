@@ -1,106 +1,128 @@
+"use client";
 import { Users } from "@/interfaces";
-import { FaUserEdit } from "react-icons/fa";
-import { FaRegUser, FaSearchengin, FaSort, FaTrashCan } from "react-icons/fa6";
 
-const data: Users[] = [
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { TiEdit, TiTrash } from "react-icons/ti";
+import { Input } from "@/components/ui/input";
+import { DialogAddUserComponent } from "@/components/user/DialogComponent";
+import { Search } from "lucide-react";
+
+const usersData: Users[] = [
   {
     id: "01",
     name: "Perdi Dev",
     email: "perdibro@gmail.com",
     role: "Admin",
-    createdAt: "active",
+    createdAt: "30 Agustus 2024",
   },
   {
     id: "02",
     name: "Naman",
     email: "namanbro@gmail.com",
     role: "User",
-    createdAt: "active",
+    createdAt: "30 Agustus 2024",
   },
   {
     id: "03",
     name: "Mina",
     email: "mina@gmail.com",
     role: "User",
-    createdAt: "active",
+    createdAt: "30 Agustus 2024",
   },
 ];
 
 export const User = () => {
   return (
     <div className="h-screen w-full bg-primary-bluewhite p-12">
-      <h1 className="text-lg font-bold">Users Database</h1>
-      <div className="flex justify-between">
-        <form action="" className="relative flex">
-          <input
-            type="search"
-            className="focus:border-taupeGray peer relative z-10 h-8 w-10 cursor-pointer rounded-lg border bg-transparent pr-6 text-xs outline-none focus:w-full focus:cursor-text focus:rounded-r-none focus:px-3"
-            placeholder="Typing..."
-          />
-          <button className="absolute bottom-0 right-0 top-0 my-auto h-8 w-10 rounded-lg bg-blue-300 px-3 peer-focus:relative peer-focus:rounded-l-none">
-            <FaSearchengin />
-          </button>
-        </form>
-        <button className="flex items-center gap-2 rounded-md bg-blue-400 px-2 py-1">
-          <FaRegUser />
-          Add User
-        </button>
-      </div>
-      <table className="my-4 w-full table-auto border-collapse border-spacing-2 rounded-md bg-white">
-        <thead>
-          <tr>
-            <th className="cursor-pointer rounded-tl-md border-b border-blue-300 bg-blue-50 p-4 transition-colors hover:bg-blue-100">
-              <p className="flex items-center justify-between gap-2 text-sm font-bold leading-none text-blue-950">
-                ID
-                <FaSort />
-              </p>
-            </th>
-            <th className="cursor-pointer border-b border-blue-300 bg-blue-50 p-4 transition-colors hover:bg-blue-100">
-              <p className="flex items-center justify-between gap-2 text-sm font-bold leading-none text-blue-950">
-                Name
-                <FaSort />
-              </p>
-            </th>
-            <th className="cursor-pointer border-b border-blue-300 bg-blue-50 p-4 transition-colors hover:bg-blue-100">
-              <p className="flex items-center justify-between gap-2 text-sm font-bold leading-none text-blue-950">
-                Email
-                <FaSort />
-              </p>
-            </th>
-            <th className="cursor-pointer border-b border-blue-300 bg-blue-50 p-4 transition-colors hover:bg-blue-100">
-              <p className="flex items-center justify-between gap-2 text-sm font-bold leading-none text-blue-950">
-                Role
-                <FaSort />
-              </p>
-            </th>
-            <th className="cursor-pointer border-b border-blue-300 bg-blue-50 p-4 transition-colors hover:bg-blue-100">
-              <p className="flex items-center justify-between gap-2 text-sm font-bold leading-none text-blue-950">
-                Created At
-                <FaSort />
-              </p>
-            </th>
-            <th className="cursor-pointer rounded-tr-md border-b border-blue-300 bg-blue-50 p-4 transition-colors hover:bg-blue-100">
-              <p className="flex items-center justify-between gap-2 text-sm font-bold leading-none text-blue-950">
-                Action
-              </p>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((user) => (
-            <tr>
-              <td className="px-2 py-4">{user.id}</td>
-              <td className="px-2 py-4">{user.name}</td>
-              <td className="px-2 py-4">{user.email}</td>
-              <td className="px-2 py-4">{user.role}</td>
-              <td className="px-2 py-4">{user.createdAt}</td>
-              <td className="px-2 py-4">
-                <FaTrashCan color="red" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Card>
+        <CardHeader>
+          <CardTitle>List of Users</CardTitle>
+          <CardDescription>
+            Manage users and view their ability.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4 flex justify-between">
+            <form className="">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search users..."
+                  className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+                />
+              </div>
+            </form>
+            <DialogAddUserComponent />
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID </TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Created At</TableHead>
+                <TableHead>Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {usersData.map((user) => (
+                <TableRow>
+                  <TableCell className="font-medium">{user.id}</TableCell>
+                  <TableCell className="font-medium">{user.name}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{user.email}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{user.role}</Badge>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {user.createdAt}
+                  </TableCell>
+                  <TableCell className="flex gap-1">
+                    <Button
+                      size={"sm"}
+                      className="bg-blue-primary hover:bg-blue-muted"
+                    >
+                      <TiEdit />
+                    </Button>
+                    <Button
+                      size={"sm"}
+                      className="hover:bg-red-muted bg-red-primary"
+                    >
+                      <TiTrash />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+        <CardFooter>
+          <div className="text-xs text-muted-foreground">
+            Showing <strong>1-10</strong> of <strong>32</strong> products
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
