@@ -1,4 +1,5 @@
 import { SideBar } from "@/components/adminSidebar";
+import { NavbarAdmin } from "@/components/NavbarAdmin";
 
 export default function MainLayout({
   children,
@@ -8,7 +9,10 @@ export default function MainLayout({
   return (
     <main className="flex">
       <SideBar />
-      <section className="w-full bg-primary-bluewhite">{children}</section>
+      <section className="flex w-screen flex-col">
+        <NavbarAdmin />
+        {children}
+      </section>
     </main>
   );
 }

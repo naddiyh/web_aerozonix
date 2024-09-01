@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      boxShadow: {
+        custom:
+          "6px 6px 30px rgba(178, 178, 178, 0.25), 2px 2px 4px rgba(210, 210, 210, 0.11)",
+      },
       fontSize: {
         "text-xs": [
           "12px",
