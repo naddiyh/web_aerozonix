@@ -1,11 +1,8 @@
+import { ICOPoint } from "./COPointInterface";
+
 export type xyCoor = {
   lat: number;
   lon: number;
-};
-
-export type coPoint = {
-  co: number;
-  coor: xyCoor;
 };
 
 export type IDataDrone = {
@@ -13,5 +10,5 @@ export type IDataDrone = {
   timeCleaning: number;
   radius: number;
   chargeStation: xyCoor;
-  coPoints: coPoint[];
+  coPoints: ICOPoint[];
 };

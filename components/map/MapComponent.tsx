@@ -6,7 +6,7 @@ import "ol/ol.css";
 import { Map, Overlay, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { XYZ } from "ol/source";
-import { fromLonLat } from "ol/proj";
+import { fromLonLat, transform } from "ol/proj";
 import {
   Circle as CircleStyle,
   Fill,
@@ -242,6 +242,21 @@ const SimpleMap = ({
       } else {
         popupRef.current!.style.display = "none";
       }
+    });
+
+    olMap.on("click", (event) => {
+      console.log(event.pixel);
+      // const feature = olMap.forEachFeatureAtPixel(event.pixel, (feat) => feat);
+      // if (feature === droneFeature) {
+      const coordinates = event.coordinate;
+
+      popupOverlay.setPosition(coordinates);
+      popupRef.current!.innerHTML = `${transform(event.coordinate, "EPSG:3857", "EPSG:4326")}`; // Customize popup content here
+      //   popupRef.current!.innerHTML = `${feature.get("name")}`; // Customize popup content here
+      //   popupRef.current!.style.display = "block";
+      // } else {
+      //   popupRef.current!.style.display = "none";
+      // }
     });
 
     // Clean up on component unmount

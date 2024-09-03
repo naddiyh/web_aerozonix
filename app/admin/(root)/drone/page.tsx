@@ -1,3 +1,5 @@
+import { Drone } from "@/features/drone";
+
 export default function drone() {
-  return <main>Ini drone</main>;
+  return <Drone />;
 }
