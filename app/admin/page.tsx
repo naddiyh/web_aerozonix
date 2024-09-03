@@ -1,5 +1,5 @@
-import { Dashboard } from "@/features/dashboard";
+import { DashboardPage } from "@/features/dashboard";
 
 export default async function AdminProductPage() {
-  return <Dashboard />;
+  return <DashboardPage />;
 }
