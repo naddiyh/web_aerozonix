@@ -73,7 +73,7 @@ const config = {
         },
         secondary: {
           darkteal: "#3FAAE4",
-          blue: "#0F5DB2",
+          blue: "#639bff",
         },
         red: { primary: "hsl(0 80 60)", muted: "hsl(0 80 50)" },
         blue: { primary: "hsl(210 80% 60%)", muted: "hsl(210 80 50)" },
