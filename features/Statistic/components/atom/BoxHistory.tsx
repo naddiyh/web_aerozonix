@@ -60,11 +60,11 @@ const timedata = [
 export const Box = () => {
   return (
     <>
-      <div className="scroll-y flex max-h-[650px] flex-col gap-3 overflow-y-auto pr-4">
+      <div className="scroll-y flex max-h-[650px] flex-col gap-3 overflow-y-auto border">
         {timedata.slice(0, 8).map((item, index) => (
           <div
             key={index}
-            className="relative flex h-[40px] w-[280px] items-center justify-between rounded-md bg-white p-4"
+            className="relative flex h-[40px] w-[280px] items-center justify-between rounded-md bg-white px-3"
           >
             <p className="text-text-m">{item.tes}</p>
             <p className="text-text-m">{item.ppm}</p>

@@ -1,6 +1,6 @@
 export const CurrentPollutant = () => {
   return (
-    <section className="flex max-w-[357px] flex-col gap-2 rounded-md border p-5">
+    <section className="flex max-w-[357px] flex-col justify-center gap-2 rounded-md border p-5">
       <div className="flex justify-between">
         <h2 className="font-semibold">Current Pollutant</h2>
         <p className="font-semibold">Pettarani</p>
