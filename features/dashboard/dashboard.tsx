@@ -8,22 +8,24 @@ import { PredictionCO } from "./PredictionCO";
 
 export const DashboardPage = () => {
   return (
-    <main className="flex flex-col gap-10 p-10">
+    <main className="grid grid-cols-1 gap-10 p-10">
       <div className="flex gap-10">
         <TotalProduct />
         <TotalLocation />
       </div>
-      <section className="flex gap-8">
-        <section className="flex w-3/4 flex-col">
-          <div className="rounded-md border px-8 py-6">
+      <section className="grid grid-cols-1 gap-6">
+        <section className="flex gap-4">
+          <div className="w-3/4 rounded-md border px-6 py-4">
             <GraphCO />
           </div>
-          {/* isi  map dibawah ini  */}
+          <div className="grid grid-cols-1 justify-center gap-4">
+            <CurrentPollutant />
+            <PredictionCO />
+          </div>
         </section>
 
-        <section className="flex flex-col gap-6">
-          <CurrentPollutant />
-          <PredictionCO />
+        <section className="flex gap-4">
+          <div className="w-3/4">{/* ISI MAP DISINI */}</div>
           <History />
         </section>
       </section>
