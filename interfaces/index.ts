@@ -1,4 +1,6 @@
 export * from "./DataDroneInterface";
+export * from "./COPointInterface";
+export * from "./DroneInterface";
 
 export interface Users {
   id: String;
