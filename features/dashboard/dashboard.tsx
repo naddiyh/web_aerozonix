@@ -1,10 +1,11 @@
-import { InputCo, OutletCo, Statistic, History } from "../Statistic";
-import { Keterangan } from "../Statistic/components/atom/LegendaCO";
+import { History } from "../Statistic/components/History";
+// import { Keterangan } from "../Statistic/components/atom/LegendaCO";
 import { GraphCO } from "../Statistic/graphic/GraphCO";
 import { TotalLocation } from "./atom/TotalLocation";
 import { TotalProduct } from "./atom/TotalProduct";
 import { CurrentPollutant } from "./CurrentPollutant";
 import { PredictionCO } from "./PredictionCO";
+import { Map } from "@/features/map";
 
 export const DashboardPage = () => {
   return (
@@ -25,7 +26,7 @@ export const DashboardPage = () => {
         </section>
 
         <section className="flex gap-4">
-          <div className="w-3/4">{/* ISI MAP DISINI */}</div>
+          <div className="w-3/4">{/* <Map /> */}</div>
           <History />
         </section>
       </section>

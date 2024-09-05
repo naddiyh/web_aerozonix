@@ -1,4 +1,4 @@
-import { coPoint, xyCoor } from "@/interfaces";
+import { ICOPoint, xyCoor } from "@/interfaces";
 
 function calculateDistance(pointA: xyCoor, pointB: xyCoor): number {
   return Math.sqrt(
@@ -11,8 +11,8 @@ function optimalPath(
   remainingTime: number,
   currentPosition: xyCoor,
   stationPosition: xyCoor,
-  CO_points: coPoint[],
-  visitedPoints: coPoint[] = [],
+  CO_points: ICOPoint[],
+  visitedPoints: ICOPoint[] = [],
   totalReward = 0,
 ) {
   let coorStation = { coor: stationPosition };
@@ -65,7 +65,7 @@ export default function findOptimalPath(
   vDroneClean: number,
   stationPosition: xyCoor,
   droneMaxFlightTime: number,
-  CO_points: coPoint[],
+  CO_points: ICOPoint[],
 ) {
   const result = optimalPath(
     vDroneClean,

@@ -20,9 +20,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import AddCOPoint from "./copoint/AddCOPoint";
+import { useEffect, useState } from "react";
+import { getCOPoints } from "@/service/copoints";
+import { ICOPoint } from "@/interfaces";
 
-export default function ComponentTableOfCO() {
+export default function ComponentTableOfCO({ idDrone }: { idDrone: string }) {
+  const [dataCO, setDataCO] = useState<ICOPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      const data = await getCOPoints(idDrone);
+      setDataCO(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <Card>
       <CardHeader>
@@ -40,20 +63,42 @@ export default function ComponentTableOfCO() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>
-                <Input id="stock-3" type="text" />
-              </TableCell>
-              <TableCell>
-                <Input id="stock-3" type="text" />
-              </TableCell>
-              <TableCell>
-                <Input id="price-3" type="text" />
-              </TableCell>
-              <TableCell>
-                <Button>Simpan</Button>
-              </TableCell>
-            </TableRow>
+            {dataCO.map((item, index) => (
+              // <TableRow key={index}>
+              //   <TableCell>{item.co}</TableCell>
+              //   <TableCell>{item.coor.lat}</TableCell>
+              //   <TableCell>{item.coor.lon}</TableCell>
+              //   <TableCell>
+              //     <Button size="sm" variant="ghost" className="gap-1">
+              //       <PlusCircle className="h-3.5 w-3.5" />
+              //       Edit
+              //     </Button>
+              //   </TableCell>
+              // </TableRow>
+              <TableRow key={index}>
+                <TableCell>
+                  <Input id="stock-3" type="text" defaultValue={item.co} />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    id="stock-3"
+                    type="text"
+                    defaultValue={item.coor.lat}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    id="price-3"
+                    type="text"
+                    defaultValue={item.coor.lon}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Button>Simpan</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+            <AddCOPoint idDrone={idDrone} />
           </TableBody>
         </Table>
       </CardContent>

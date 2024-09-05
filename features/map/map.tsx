@@ -1,8 +1,6 @@
 "use client";
 
-import { AerozonixMapWatermark, InfoCOMap } from "@/components/map";
 import ComponentTableOfCO from "@/components/map/ComponentTableOfCO";
-import { DropdownMenuCheckboxes } from "@/components/map/dropdown";
 import {
   Select,
   SelectContent,
@@ -10,11 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { IDrone } from "@/interfaces";
 import { TempDataDroneA } from "@/lib/data/dataDrone";
 import findOptimalPath from "@/lib/utils/findOptimalPath";
+import { getAllDrones } from "@/service/drone";
 import dynamic from "next/dynamic";
-import { useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
+import { useEffect, useState } from "react";
 
 // Dynamically import the SimpleMap component to avoid SSR issues
 const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
@@ -24,10 +23,37 @@ const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
 export const Map = () => {
   const center = TempDataDroneA.chargeStation;
   const coPoints = TempDataDroneA.coPoints;
-  const radius = TempDataDroneA.radius;
+  // const radius = TempDataDroneA.radius;
 
-  const [drone, setDrone] = useState("");
-  const listDrone: string[] = ["Drone-A01", "Drone-X01"];
+  const [drone, setDrone] = useState<IDrone>();
+  // const [radius, setRadius] = useState<number>(0);
+  const [droneData, setDroneData] = useState<IDrone[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Tambahkan state loading
+
+  const fetchDrones = async () => {
+    try {
+      console.log("Fetching drones...");
+      const data = await getAllDrones();
+      setDroneData(data);
+      if (data.length > 0) {
+        const dataDrone = data[0];
+        setDrone(dataDrone);
+        console.log({ dataDrone });
+      }
+      console.log(data.length);
+    } catch (error) {
+      console.error("Failed to fetch drones:", error);
+    } finally {
+      console.log({ drone });
+      setIsLoading(false); // Set loading menjadi false setelah data berhasil diambil
+    }
+  };
+
+  useEffect(() => {
+    fetchDrones();
+  }, []);
+
+  useEffect(() => {}, [isLoading, drone]);
 
   const path = findOptimalPath(
     TempDataDroneA.timeCleaning,
@@ -36,20 +62,28 @@ export const Map = () => {
     coPoints,
   );
 
+  if (isLoading) {
+    // Render indikator loading selama data sedang diambil
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="px-12 py-6">
       <div className="flex justify-between">
         <div className="flex gap-4">
           <Select
-            defaultValue={listDrone[0]}
-            onValueChange={(value) => setDrone(value)}
+            value={drone?.code || ""}
+            onValueChange={(value) => setDrone(drone)}
+            defaultValue={droneData[0]?.code || ""}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select a role" />
+              <SelectValue placeholder="Select a drone" />
             </SelectTrigger>
             <SelectContent>
-              {listDrone.map((drone) => (
-                <SelectItem value={drone}>{drone}</SelectItem>
+              {droneData.map((drone) => (
+                <SelectItem key={drone.code} value={drone.code}>
+                  {drone.code}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -62,12 +96,16 @@ export const Map = () => {
         <MapComponent
           center={center}
           coPoints={coPoints}
-          radius={radius}
+          radius={
+            drone == undefined
+              ? 0
+              : ((drone?.coCleaningRate ?? 0) * drone?.maxFlightTime) / 2
+          }
           path={path}
         />
       </div>
       <div>
-        <ComponentTableOfCO />
+        <ComponentTableOfCO idDrone={drone!.id || ""} />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
-import { xyCoor } from "./DataDroneInterface";
+import { ICOPoint } from "./COPointInterface";
+import { xyCoor } from "./DroneCOInterface";
 
 export interface IDrone {
   id?: string;
@@ -11,6 +12,7 @@ export interface IDrone {
   maxSpeed?: number | null;
   currentLocation?: xyCoor | null;
   lastMaintenance?: Date | null;
+  coPoints?: ICOPoint[];
 }
 
 // interface Drone {

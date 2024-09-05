@@ -1,7 +1,7 @@
 "use client";
 
 // components/SimpleMap.js
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "ol/ol.css";
 import { Overlay } from "ol";
 import { fromLonLat, transform } from "ol/proj";
@@ -22,6 +22,9 @@ import VectorSource from "ol/source/Vector";
 import { ICOPoint, xyCoor } from "@/interfaces";
 import { AerozonixMapWatermark } from "./AerozonixMapWatermark";
 import { InfoCOMap } from "./InfoCOMap";
+import { Polyline } from "ol/format";
+import { getVectorContext } from "ol/render";
+import { Button } from "../ui/button";
 
 const SimpleMap = ({
   center,
@@ -36,6 +39,13 @@ const SimpleMap = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
+
+  const [animating, setAnimating] = useState(false);
+  const [position, setPosition] = useState<Point | null>(null);
+  const animationRef = useRef<{
+    startAnimation: () => void;
+    stopAnimation: () => void;
+  } | null>(null);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -229,6 +239,72 @@ const SimpleMap = ({
 
             olMap.addLayer(vectorLayer);
 
+            const startButton = document.getElementById("start-animation");
+            let animating = false;
+            let distance = 0;
+            let lastTime: number;
+            let idx = 0;
+            const position = droneFeature.getGeometry()!.clone();
+
+            const route = lineString;
+            // new Polyline({
+            //   factor: 1e6,
+            // }).readGeometry(lineString, {
+            //   dataProjection: "EPSG:4326",
+            //   featureProjection: "EPSG:3857",
+            // });
+            position.setCoordinates(route.getCoordinateAt(0));
+            olMap.render();
+
+            // function moveFeature(event: any) {
+            //   if (idx > 10) return;
+            //   idx++;
+            //   const speed = 2000000;
+            //   const time = event.frameState.time;
+            //   const elapsedTime = time - lastTime;
+            //   distance = (distance + (speed * elapsedTime) / 1e6) % 2;
+            //   lastTime = time;
+
+            //   const currentCoordinate = route.getCoordinateAt(
+            //     distance > 1 ? 2 - distance : distance,
+            //   );
+            //   console.log(currentCoordinate);
+            //   position.setCoordinates(currentCoordinate);
+            //   const vectorContext = getVectorContext(event);
+            //   vectorContext.setStyle(
+            //     new Style({
+            //       image: new Icon({
+            //         src: "/map/DroneIcon.png",
+            //         scale: 0.2,
+            //       }),
+            //       zIndex: 1,
+            //     }),
+            //   );
+            //   vectorContext.drawGeometry(position);
+            //   // tell OpenLayers to continue the postrender animation
+            //   olMap.render();
+            // }
+
+            // function startAnimation() {
+            //   animating = true;
+            //   lastTime = Date.now();
+            //   // startButton.textContent = "Stop Animation";
+            //   vectorLayer.on("postrender", moveFeature);
+            //   // hide geoMarker and trigger map render through change event
+            //   droneFeature.setGeometry(undefined);
+            // }
+
+            // function stopAnimation() {
+            //   animating = false;
+            //   // startButton.textContent = "Start Animation";
+
+            //   // Keep marker at current animation position
+            //   droneFeature.setGeometry(position);
+            //   vectorLayer.un("postrender", moveFeature);
+            // }
+
+            // animationRef.current = { startAnimation, stopAnimation };
+
             // Add overlay for the popup
             const popupOverlay = new Overlay({
               element: popupRef.current!,
@@ -281,6 +357,9 @@ const SimpleMap = ({
     <div className="relative h-[75vh] w-full rounded-md bg-gradient-to-br from-white via-slate-50 to-white">
       <AerozonixMapWatermark />
       <InfoCOMap />
+      <Button onClick={() => animationRef.current?.startAnimation()}>
+        Start
+      </Button>
       <div className="h-full w-full overflow-clip rounded-md">
         <div ref={mapRef} className="h-full w-full bg-clip-content" />
         <div
