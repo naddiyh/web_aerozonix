@@ -21,8 +21,10 @@ export function DropdownMenuCheckboxes({ list }: { list: string[] }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start" side="bottom">
         <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          {list.map((list) => (
-            <DropdownMenuRadioItem value={list}>{list}</DropdownMenuRadioItem>
+          {list.map((list, index) => (
+            <DropdownMenuRadioItem key={index} value={list}>
+              {list}
+            </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

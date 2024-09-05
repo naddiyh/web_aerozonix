@@ -14,7 +14,6 @@ import {
 } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
 import { Daily } from "../components/atom/DailyButton";
-import { Keterangan } from "../components/atom/LegendaCO";
 
 ChartJS.register(
   CategoryScale,

@@ -69,8 +69,10 @@ export function DialogAddUserComponent() {
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
-                  {userRole.map((role) => (
-                    <SelectItem value={role}>{role}</SelectItem>
+                  {userRole.map((role, index) => (
+                    <SelectItem key={index} value={role}>
+                      {role}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>

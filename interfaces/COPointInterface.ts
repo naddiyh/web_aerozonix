@@ -1,4 +1,4 @@
-import { xyCoor } from "./DataDroneInterface";
+import { xyCoor } from "./DroneCOInterface";
 
 export interface ICOPoint {
   co: number;
