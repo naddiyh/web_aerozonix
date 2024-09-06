@@ -15,16 +15,16 @@ import {
 import zoomPlugin from "chartjs-plugin-zoom";
 import { Daily } from "../components/atom/DailyButton";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  zoomPlugin,
-);
+// ChartJS.register(
+//   CategoryScale,
+//   LinearScale,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+//   zoomPlugin,
+// );
 
 export const GraphCO = () => {
   const actualDataLength = Math.floor(Data.length / 2);
@@ -106,7 +106,7 @@ export const GraphCO = () => {
       </div>
 
       <div className="flex h-[300px]">
-        <Line
+        {/* <Line
           data={data}
           options={{
             maintainAspectRatio: false,
@@ -175,7 +175,7 @@ export const GraphCO = () => {
               },
             },
           }}
-        />
+        /> */}
       </div>
     </section>
   );
