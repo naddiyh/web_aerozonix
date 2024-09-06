@@ -1,15 +1,16 @@
 "use client";
 
-// components/SimpleMap.js
 import React, { useEffect, useRef, useState } from "react";
 import "ol/ol.css";
 import Point from "ol/geom/Point";
 import { ICOPoint, xyCoor } from "@/interfaces";
 import { AerozonixMapWatermark } from "./AerozonixMapWatermark";
 import { InfoCOMap } from "./InfoCOMap";
-import { Polyline } from "ol/format";
 import { getVectorContext } from "ol/render";
 import { Button } from "../ui/button";
+import RenderEvent from "ol/render/Event";
+import { Circle, LineString } from "ol/geom";
+import { Style } from "ol/style";
 
 const SimpleMap = ({
   center,
@@ -25,12 +26,9 @@ const SimpleMap = ({
   const mapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const [animating, setAnimating] = useState(false);
-  const [position, setPosition] = useState<Point | null>(null);
-  const animationRef = useRef<{
-    startAnimation: () => void;
-    stopAnimation: () => void;
-  } | null>(null);
+  const [map, setMap] = useState(null);
+  const [droneFeature, setDroneFeature] = useState(null);
+  const animationRef = useRef(null);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -66,7 +64,9 @@ const SimpleMap = ({
         { default: VectorSource },
         { default: Feature },
       ]) => {
-        // Code implementation here...
+        const centerStationCoor = fromLonLat([center.lat, center.lon]);
+        const vectorSource = new VectorSource();
+
         const olMap = new Map({
           target: mapRef.current!,
           layers: [
@@ -77,13 +77,12 @@ const SimpleMap = ({
             }),
           ],
           view: new View({
-            center: fromLonLat([center.lat, center.lon]),
+            center: centerStationCoor,
             zoom: 16,
             minZoom: 14,
           }),
         });
 
-        // Function to determine color based on CO level
         const getColorByCOLevel = (co: number) => {
           if (co <= 25) return "#60a5fa";
           if (co <= 40) return "#fb923c";
@@ -91,13 +90,18 @@ const SimpleMap = ({
           return "white";
         };
 
-        const vectorSource = new VectorSource();
+        const addFeature = (
+          geometry: Point | Circle | LineString,
+          style: Style,
+        ) => {
+          const feature = new Feature({ geometry });
+          feature.setStyle(style);
+          vectorSource.addFeature(feature);
+        };
 
-        const centerStationCoor = fromLonLat([center.lat, center.lon]);
-        const centerFeature = new Feature({
-          geometry: new Point(centerStationCoor),
-        });
-        centerFeature.setStyle(
+        // Add center station
+        addFeature(
+          new Point(centerStationCoor),
           new Style({
             image: new CircleStyle({
               radius: 8,
@@ -107,10 +111,9 @@ const SimpleMap = ({
           }),
         );
 
-        const iconStationFeature = new Feature({
-          geometry: new Point(centerStationCoor),
-        });
-        iconStationFeature.setStyle(
+        // Add station icon
+        addFeature(
+          new Point(centerStationCoor),
           new Style({
             image: new Icon({
               src: "/map/ChargeIcon.png",
@@ -120,44 +123,33 @@ const SimpleMap = ({
           }),
         );
 
-        const pillarDesign = new Feature({
-          geometry: new LineString([
+        // Add pillar design
+        addFeature(
+          new LineString([
             centerStationCoor,
             fromLonLat([center.lat, center.lon + 0.0007]),
           ]),
-        });
-        pillarDesign.setStyle(
           new Style({
             stroke: new Stroke({ color: "#09173A", width: 2 }),
           }),
         );
 
-        const radiusStationFeature = new Feature({
-          geometry: new Circle(centerStationCoor, radius),
-        });
-
-        radiusStationFeature.setStyle(
+        // Add radius station
+        addFeature(
+          new Circle(centerStationCoor, radius),
           new Style({
             stroke: new Stroke({ color: "#3FAAE4", width: 2 }),
             fill: new Fill({ color: "#3FAAE430" }),
           }),
         );
-        vectorSource.addFeatures([
-          centerFeature,
-          iconStationFeature,
-          pillarDesign,
-          radiusStationFeature,
-        ]);
 
+        // Add drone and its radius
         const droneCoor = fromLonLat([
           center.lat - 0.0009,
           center.lon + 0.0005,
         ]);
-        const droneFeature = new Feature({
-          geometry: new Point(droneCoor),
-          name: "Drone A01",
-        });
-        droneFeature.setStyle(
+        addFeature(
+          new Point(droneCoor),
           new Style({
             image: new Icon({
               src: "/map/DroneIcon.png",
@@ -166,27 +158,20 @@ const SimpleMap = ({
             zIndex: 1,
           }),
         );
-        const droneFeatureRadius = new Feature({
-          geometry: new Circle(droneCoor, 70),
-        });
-        droneFeatureRadius.setStyle(
+        addFeature(
+          new Circle(droneCoor, 70),
           new Style({
             fill: new Fill({ color: "#02A5EC30" }),
           }),
         );
-        vectorSource.addFeatures([droneFeature, droneFeatureRadius]);
 
-        coPoints.forEach(({ co, coor }: ICOPoint) => {
-          const coPointCoor = fromLonLat([coor.lat, coor.lon]);
-          const coPointFeature = new Feature({
-            geometry: new Point(coPointCoor),
-          });
-
-          coPointFeature.setStyle(
+        // Add CO points
+        coPoints.forEach(({ co, coor }) => {
+          addFeature(
+            new Point(fromLonLat([coor.lat, coor.lon])),
             new Style({
               image: new CircleStyle({
                 radius: 12,
-
                 fill: new Fill({ color: getColorByCOLevel(co) + "80" }),
                 stroke: new Stroke({ color: getColorByCOLevel(co) }),
                 scale: 1.2,
@@ -199,51 +184,28 @@ const SimpleMap = ({
               }),
             }),
           );
-          vectorSource.addFeature(coPointFeature);
         });
 
-        const pathStartLine = new Feature({
-          geometry: new LineString([
-            droneCoor,
-            fromLonLat([path[0].coor.lat, path[0].coor.lon]),
-          ]),
-        });
-
-        pathStartLine.setStyle(
-          new Style({
-            stroke: new Stroke({
-              width: 2,
-            }),
-          }),
-        );
-        vectorSource.addFeature(pathStartLine);
-
-        // Convert the array of lat/lon to an array of OpenLayers coordinates
-        const olCoordinates = path.map((item: any) =>
+        // Add path
+        const pathCoordinates = path.map((item: ICOPoint) =>
           fromLonLat([item.coor.lat, item.coor.lon]),
         );
-
-        // Create a LineString geometry from the coordinates
-        const lineString = new LineString(olCoordinates);
-
-        // Create a feature with the LineString geometry
-        const pathLine = new Feature({
-          geometry: lineString,
-        });
-
-        // Style for the line
-        pathLine.setStyle(
+        addFeature(
+          new LineString([droneCoor, pathCoordinates[0]]),
+          new Style({
+            stroke: new Stroke({ width: 2 }),
+          }),
+        );
+        addFeature(
+          new LineString(pathCoordinates),
           new Style({
             stroke: new Stroke({
-              lineJoin: "round",
               color: "#3FAAE4",
               lineDash: [10],
               width: 2,
             }),
           }),
         );
-
-        vectorSource.addFeature(pathLine);
 
         // Add all features to a vector layer
         const vectorLayer = new VectorLayer({
@@ -252,33 +214,33 @@ const SimpleMap = ({
 
         olMap.addLayer(vectorLayer);
 
-        // Add overlay for the popup
-        const popupOverlay = new Overlay({
-          element: popupRef.current!,
-          positioning: "top-center",
-          stopEvent: false,
-          offset: [0, -50],
-        });
-        olMap.addOverlay(popupOverlay);
+        // // Add overlay for the popup
+        // const popupOverlay = new Overlay({
+        //   element: popupRef.current!,
+        //   positioning: "top-center",
+        //   stopEvent: false,
+        //   offset: [0, -50],
+        // });
+        // olMap.addOverlay(popupOverlay);
 
-        // Event listener for hover effect
-        olMap.on("click", (event) => {
-          const feature = olMap.forEachFeatureAtPixel(
-            event.pixel,
-            (feat) => feat,
-          );
-          console.log(feature === droneFeature);
-          if (feature === droneFeature) {
-            const coordinates = droneFeature.getGeometry()!.getCoordinates();
-            console.log(coordinates);
-            console.log(feature);
-            popupOverlay.setPosition(coordinates);
-            popupRef.current!.innerHTML = `${feature.get("name")}`; // Customize popup content here
-            popupRef.current!.style.display = "block";
-          } else {
-            popupRef.current!.style.display = "none";
-          }
-        });
+        // // Event listener for hover effect
+        // olMap.on("click", (event) => {
+        //   const feature = olMap.forEachFeatureAtPixel(
+        //     event.pixel,
+        //     (feat) => feat,
+        //   );
+        //   console.log(feature === droneFeature);
+        //   if (feature === droneFeature) {
+        //     const coordinates = droneFeature.getGeometry()!.getCoordinates();
+        //     console.log(coordinates);
+        //     console.log(feature);
+        //     popupOverlay.setPosition(coordinates);
+        //     popupRef.current!.innerHTML = `${feature.get("name")}`; // Customize popup content here
+        //     popupRef.current!.style.display = "block";
+        //   } else {
+        //     popupRef.current!.style.display = "none";
+        //   }
+        // });
 
         // olMap.on("click", (event) => {
         //   console.log(event.pixel);
