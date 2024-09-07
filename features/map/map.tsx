@@ -21,10 +21,12 @@ const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
 });
 
 export const Map = () => {
-  const center = TempDataDroneA.chargeStation;
+  // const center = TempDataDroneA.chargeStation;
+  const center = {};
   const coPoints = TempDataDroneA.coPoints;
   // const radius = TempDataDroneA.radius;
 
+  const [droneID, setIDDrone] = useState<string | undefined>();
   const [drone, setDrone] = useState<IDrone>();
   // const [radius, setRadius] = useState<number>(0);
   const [droneData, setDroneData] = useState<IDrone[]>([]);
@@ -33,11 +35,13 @@ export const Map = () => {
   const fetchDrones = async () => {
     try {
       console.log("Fetching drones...");
+      setIsLoading(true);
       const data = await getAllDrones();
       setDroneData(data);
       if (data.length > 0) {
         const dataDrone = data[0];
         setDrone(dataDrone);
+        setIDDrone(dataDrone.id);
         console.log({ dataDrone });
       }
       console.log(data.length);
@@ -53,35 +57,52 @@ export const Map = () => {
     fetchDrones();
   }, []);
 
-  useEffect(() => {}, [isLoading, drone]);
-
-  const path = findOptimalPath(
-    TempDataDroneA.timeCleaning,
-    center,
-    TempDataDroneA.maxFlightTime,
-    coPoints,
-  );
+  useEffect(() => {
+    if (droneID && droneData.length > 0) {
+      const selectedDrone = droneData.find((d) => d.id === droneID);
+      setDrone(selectedDrone);
+    }
+  }, [droneID, droneData]);
 
   if (isLoading) {
-    // Render indikator loading selama data sedang diambil
     return <div>Loading...</div>;
   }
+
+  if (droneData.length === 0) {
+    return <div>No drones available</div>;
+  }
+
+  const path = drone?.chargeStation
+    ? findOptimalPath(
+        TempDataDroneA.timeCleaning,
+        drone.chargeStation,
+        TempDataDroneA.maxFlightTime,
+        TempDataDroneA.coPoints,
+      )
+    : [];
+  // setDrone(droneData[0]);
+
+  // const path = findOptimalPath(
+  //   drone?.chargeStation!,
+  //   TempDataDroneA.maxFlightTime,
+  //   coPoints,
+  // );
 
   return (
     <div className="px-12 py-6">
       <div className="flex justify-between">
         <div className="flex gap-4">
           <Select
-            value={drone?.code || ""}
-            onValueChange={(value) => setDrone(drone)}
-            defaultValue={droneData[0]?.code || ""}
+            value={drone?.id}
+            onValueChange={(value) => setIDDrone(value)}
+            defaultValue={droneData[0].id}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select a drone" />
             </SelectTrigger>
             <SelectContent>
               {droneData.map((drone) => (
-                <SelectItem key={drone.code} value={drone.code}>
+                <SelectItem key={drone.id} value={drone.id!}>
                   {drone.code}
                 </SelectItem>
               ))}
@@ -94,7 +115,7 @@ export const Map = () => {
       </div>
       <div className="my-4">
         <MapComponent
-          center={center}
+          center={drone?.chargeStation!}
           coPoints={coPoints}
           radius={
             drone == undefined
@@ -105,7 +126,7 @@ export const Map = () => {
         />
       </div>
       <div>
-        <ComponentTableOfCO idDrone={drone!.id || ""} />
+        <ComponentTableOfCO idDrone={droneID || ""} />
       </div>
     </div>
   );

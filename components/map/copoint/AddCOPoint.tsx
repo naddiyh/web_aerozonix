@@ -4,8 +4,14 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { ICOPoint } from "@/interfaces";
 import { addCOPoint } from "@/service/copoints";
 import { useState } from "react";
+import { FaSave } from "react-icons/fa";
 
-const AddCOPoint = ({ idDrone }: { idDrone: string }) => {
+interface ChildComponentProps {
+  idDrone: string;
+  onSubmitSuccess: () => void;
+}
+
+const AddCOPoint = ({ idDrone, onSubmitSuccess }: ChildComponentProps) => {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [coLevel, setCoLevel] = useState(0);
@@ -15,8 +21,13 @@ const AddCOPoint = ({ idDrone }: { idDrone: string }) => {
       co: coLevel,
       coor: { lat: latitude, lon: longitude },
     };
-    console.log({ data, idDrone });
-    await addCOPoint(idDrone, data);
+
+    try {
+      await addCOPoint(idDrone, data);
+      onSubmitSuccess();
+    } catch {
+      console.error("Error adding COPoint");
+    }
   };
 
   return (
@@ -43,7 +54,9 @@ const AddCOPoint = ({ idDrone }: { idDrone: string }) => {
         />
       </TableCell>
       <TableCell>
-        <Button onClick={handleSubmit}>Simpan</Button>
+        <Button onClick={handleSubmit}>
+          <FaSave size={14} />
+        </Button>
       </TableCell>
     </TableRow>
   );
