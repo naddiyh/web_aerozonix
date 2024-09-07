@@ -1,6 +1,6 @@
 import { History } from "../Statistic/components/History";
 // import { Keterangan } from "../Statistic/components/atom/LegendaCO";
-import { GraphCO } from "../Statistic/graphic/GraphCO";
+import GraphCO from "../Statistic/graphic/GraphCO";
 import { TotalLocation } from "./atom/TotalLocation";
 import { TotalProduct } from "./atom/TotalProduct";
 import { CurrentPollutant } from "./CurrentPollutant";
@@ -16,7 +16,7 @@ export const DashboardPage = () => {
       <section className="grid grid-cols-1 gap-6">
         <section className="flex gap-4">
           <div className="w-3/4 rounded-md border px-6 py-4">
-            {/* <GraphCO /> */}
+            <GraphCO />
           </div>
           <div className="grid grid-cols-1 justify-center gap-4">
             <CurrentPollutant />
