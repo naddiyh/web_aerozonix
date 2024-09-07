@@ -5,7 +5,6 @@ import { TotalLocation } from "./atom/TotalLocation";
 import { TotalProduct } from "./atom/TotalProduct";
 import { CurrentPollutant } from "./CurrentPollutant";
 import { PredictionCO } from "./PredictionCO";
-import { Map } from "@/features/map";
 
 export const DashboardPage = () => {
   return (
@@ -17,14 +16,13 @@ export const DashboardPage = () => {
       <section className="grid grid-cols-1 gap-6">
         <section className="flex gap-4">
           <div className="w-3/4 rounded-md border px-6 py-4">
-            <GraphCO />
+            {/* <GraphCO /> */}
           </div>
           <div className="grid grid-cols-1 justify-center gap-4">
             <CurrentPollutant />
             <PredictionCO />
           </div>
         </section>
-
         <section className="flex gap-4">
           <div className="w-3/4">{/* <Map /> */}</div>
           <History />

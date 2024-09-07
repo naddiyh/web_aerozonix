@@ -1,3 +1,8 @@
-export default function Statistic() {
-  return <main>tes ini statistic</main>;
+import { Statistic } from "@/features/Statistic";
+export default function StatisticPage() {
+  return (
+    <main>
+      <Statistic />
+    </main>
+  );
 }
