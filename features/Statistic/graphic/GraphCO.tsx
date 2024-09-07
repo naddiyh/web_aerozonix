@@ -26,10 +26,9 @@ import { Daily } from "../components/atom/DailyButton";
 //   zoomPlugin,
 // );
 
-export const GraphCO = () => {
+const GraphCO: React.FC = () => {
   const actualDataLength = Math.floor(Data.length / 2);
 
-  //min & max margin y-axis
   const ppmValues = Data.map((data) => data.ppm);
   const minPpm = Math.min(...ppmValues);
   const maxPpm = Math.max(...ppmValues);
@@ -180,3 +179,5 @@ export const GraphCO = () => {
     </section>
   );
 };
+
+export default GraphCO;

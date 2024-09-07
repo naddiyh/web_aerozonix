@@ -8,7 +8,14 @@ import {
   InputCo,
   Keterangan,
 } from "@/features/Statistic";
-// import { GraphCO } from "./graphic/GraphCO";
+import dynamic from "next/dynamic";
+
+const GraphCO = dynamic<React.ComponentType>(
+  () => import("./graphic/GraphCO"),
+  {
+    ssr: false,
+  },
+) as React.ComponentType;
 
 export const Statistic = () => {
   return (
@@ -28,7 +35,7 @@ export const Statistic = () => {
             <Keterangan />
           </section>
           <section className="flex w-full items-center rounded-xl bg-white px-10 py-12 shadow-custom">
-            {/* <GraphCO /> */}
+            <GraphCO />
           </section>
         </section>
         <History />
