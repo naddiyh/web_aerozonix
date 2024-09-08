@@ -8,3 +8,4 @@ export * from "./components/atom/Download";
 export * from "./components/atom/LegendaCO";
 export * from "./components/atom/Location";
 export * from "./components/atom/StatusDrone";
+export * from "./graphic/GraphCO";

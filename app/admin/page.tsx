@@ -1,6 +1,5 @@
 import { DashboardPage } from "@/features/dashboard";
 
-export default async function page() {
+export default function AdminPage() {
   return <DashboardPage />;
-  // return <div>Admin Page</div>;
 }
