@@ -1,7 +1,7 @@
 "use client";
 import { Line } from "react-chartjs-2";
 import { Data } from "./Dta";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,23 +12,28 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import zoomPlugin from "chartjs-plugin-zoom";
+
 import { Daily } from "../components/atom/DailyButton";
 
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-//   zoomPlugin,
-// );
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
-const GraphCO: React.FC = () => {
+export const GraphCO: React.FC = () => {
+  useEffect(() => {
+    if (typeof window !== "undefined")
+      import("chartjs-plugin-zoom").then((plugin) => {
+        ChartJS.register(plugin.default);
+      });
+  }, []);
+
   const actualDataLength = Math.floor(Data.length / 2);
-
   const ppmValues = Data.map((data) => data.ppm);
   const minPpm = Math.min(...ppmValues);
   const maxPpm = Math.max(...ppmValues);
@@ -105,7 +110,7 @@ const GraphCO: React.FC = () => {
       </div>
 
       <div className="flex h-[300px]">
-        {/* <Line
+        <Line
           data={data}
           options={{
             maintainAspectRatio: false,
@@ -174,10 +179,8 @@ const GraphCO: React.FC = () => {
               },
             },
           }}
-        /> */}
+        />
       </div>
     </section>
   );
 };
-
-export default GraphCO;

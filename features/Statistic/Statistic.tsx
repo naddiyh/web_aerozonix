@@ -1,4 +1,5 @@
 "use client";
+
 import {
   DownloadFile,
   Location,
@@ -10,12 +11,10 @@ import {
 } from "@/features/Statistic";
 import dynamic from "next/dynamic";
 
-const GraphCO = dynamic<React.ComponentType>(
-  () => import("./graphic/GraphCO"),
-  {
-    ssr: false,
-  },
-) as React.ComponentType;
+const GraphCO = dynamic(
+  () => import("./graphic/GraphCO").then((mod) => mod.GraphCO),
+  { ssr: false },
+);
 
 export const Statistic = () => {
   return (
