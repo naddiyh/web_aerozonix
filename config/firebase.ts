@@ -3,18 +3,17 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+  apiKey: "AIzaSyAXEv76J-q8_xdoxplP2l0kKewq-C7ujDM",
+  authDomain: "aerozonix.firebaseapp.com",
+  databaseURL:
+    "https://aerozonix-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "aerozonix",
+  storageBucket: "aerozonix.appspot.com",
+  messagingSenderId: "984380429936",
+  appId: "1:984380429936:web:2ea1d7df38586bca3686b5",
+  measurementId: "G-GXZPV168EL",
 };
 
-const app = initializeApp(firebaseConfig);
-
-// export const dbRealtime = getDatabase(app);
+export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);

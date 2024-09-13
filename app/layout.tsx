@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+import Providers from "./provider";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import "react-toastify/dist/ReactToastify.css";
 
 const OpenSans = Open_Sans({
   display: "swap",
@@ -9,7 +13,6 @@ const OpenSans = Open_Sans({
   fallback: ["Helvetica Neue", "sans-serif"],
   subsets: ["latin-ext", "latin"],
 });
-
 
 export const metadata: Metadata = {
   title: "Aerozonix | Monitoring System Air Quality",
@@ -23,7 +26,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={OpenSans.className}>{children}</body>
+      <body className={OpenSans.className}>
+        <Providers>
+          <ReactQueryDevtools
+            initialIsOpen={false}
+            buttonPosition="bottom-left"
+          />
+
+          {children}
+        </Providers>
+        <ToastContainer autoClose={2000} />
+      </body>
     </html>
   );
 }
