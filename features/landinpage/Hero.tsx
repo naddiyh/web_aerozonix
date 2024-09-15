@@ -1,8 +1,8 @@
 import Image from "next/image";
 export const Hero = () => {
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center">
-      <section className="flex items-center justify-between">
+    <section className="flex min-h-screen flex-col items-center justify-center px-40">
+      <section className="flex flex-col items-center gap-24 md:flex-row md:justify-between">
         <Image
           src={"/images/povdepan.webp"}
           alt=""
@@ -11,7 +11,7 @@ export const Hero = () => {
           objectFit="cover"
           className="z-10"
         />
-        <div className="absolute left-[140px] h-[450px] w-[450px] rounded-full bg-[#EDF5FF] object-cover"></div>
+        <div className="absolute left-[140px] -z-10 h-[450px] w-[450px] rounded-full bg-[#EDF5FF] object-cover"></div>
         <div className="flex w-1/2 flex-col gap-10">
           <h2 className="text-right text-heading-l font-bold text-secondary-darkteal">
             Air Puryfrying Drone

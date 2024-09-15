@@ -1,5 +1,5 @@
-import { Login,  } from "@/features/auth";
+import { LoginAdmin } from "@/features/auth";
 
 export default function PageLogin() {
-  return <Login />;
+  return <LoginAdmin />;
 }
