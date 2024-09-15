@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusCircle } from "lucide-react";
+import { EditIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,8 +30,10 @@ export default function ComponentTableOfCO({ idDrone }: { idDrone: string }) {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
+    setLoading(true); // Pastikan loading diaktifkan setiap kali data diambil
     try {
       const data = await getCOPoints(idDrone);
+      console.log({ data });
       setDataCO(data);
     } catch (error) {
       console.error(error);
@@ -40,9 +42,15 @@ export default function ComponentTableOfCO({ idDrone }: { idDrone: string }) {
     }
   };
 
+  // Fetch data when component mounts or idDrone changes
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [idDrone]);
+
+  // Log dataCO when it changes
+  useEffect(() => {
+    console.log({ dataCO });
+  }, [dataCO]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -64,17 +72,6 @@ export default function ComponentTableOfCO({ idDrone }: { idDrone: string }) {
           </TableHeader>
           <TableBody>
             {dataCO.map((item, index) => (
-              // <TableRow key={index}>
-              //   <TableCell>{item.co}</TableCell>
-              //   <TableCell>{item.coor.lat}</TableCell>
-              //   <TableCell>{item.coor.lon}</TableCell>
-              //   <TableCell>
-              //     <Button size="sm" variant="ghost" className="gap-1">
-              //       <PlusCircle className="h-3.5 w-3.5" />
-              //       Edit
-              //     </Button>
-              //   </TableCell>
-              // </TableRow>
               <TableRow key={index}>
                 <TableCell>
                   <Input id="stock-3" type="text" defaultValue={item.co} />
@@ -94,19 +91,21 @@ export default function ComponentTableOfCO({ idDrone }: { idDrone: string }) {
                   />
                 </TableCell>
                 <TableCell>
-                  <Button>Simpan</Button>
+                  <Button className="bg-blue-primary hover:bg-blue-muted">
+                    <EditIcon size={14} />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
-            <AddCOPoint idDrone={idDrone} />
+            <AddCOPoint idDrone={idDrone} onSubmitSuccess={fetchData} />
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter className="justify-center border-t p-4">
-        <Button size="sm" variant="ghost" className="gap-1">
+        {/* <Button size="sm" variant="ghost" className="gap-1">
           <PlusCircle className="h-3.5 w-3.5" />
           Add points
-        </Button>
+        </Button> */}
       </CardFooter>
     </Card>
   );

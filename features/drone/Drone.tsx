@@ -74,8 +74,8 @@ export const Drone = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {droneData.map((drone, index) => (
-                <TableRow key={index}>
+              {droneData.map((drone) => (
+                <TableRow key={drone.id}>
                   <TableCell className="font-medium">{drone.code}</TableCell>
                   <TableCell className="font-medium">{drone.city}</TableCell>
                   <TableCell>{drone.maxFlightTime ?? "-"} m/s</TableCell>

@@ -11,6 +11,9 @@ import { Button } from "../ui/button";
 import RenderEvent from "ol/render/Event";
 import { Circle, LineString } from "ol/geom";
 import { Style } from "ol/style";
+import { Feature, Map } from "ol";
+import { easeOut } from "ol/easing";
+import { fromLonLat } from "ol/proj";
 
 const SimpleMap = ({
   center,
@@ -23,12 +26,13 @@ const SimpleMap = ({
   radius: number;
   path: any; // define this, not best practice
 }) => {
+  console.log({ center, coPoints, radius, path });
   const mapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const [map, setMap] = useState(null);
+  const [map, setMap] = useState<Map>();
   const [droneFeature, setDroneFeature] = useState(null);
-  const animationRef = useRef(null);
+  const animationRef = useRef(0);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -64,7 +68,7 @@ const SimpleMap = ({
         { default: VectorSource },
         { default: Feature },
       ]) => {
-        const centerStationCoor = fromLonLat([center.lat, center.lon]);
+        const centerStationCoor = fromLonLat([+center.lat, +center.lon]);
         const vectorSource = new VectorSource();
 
         const olMap = new Map({
@@ -79,7 +83,7 @@ const SimpleMap = ({
           view: new View({
             center: centerStationCoor,
             zoom: 16,
-            minZoom: 14,
+            minZoom: 3,
           }),
         });
 
@@ -148,8 +152,10 @@ const SimpleMap = ({
           center.lat - 0.0009,
           center.lon + 0.0005,
         ]);
-        addFeature(
-          new Point(droneCoor),
+        const droneFeature = new Feature({
+          geometry: new Point(droneCoor),
+        });
+        droneFeature.setStyle(
           new Style({
             image: new Icon({
               src: "/map/DroneIcon.png",
@@ -158,6 +164,7 @@ const SimpleMap = ({
             zIndex: 1,
           }),
         );
+        vectorSource.addFeature(droneFeature);
         addFeature(
           new Circle(droneCoor, 70),
           new Style({
@@ -213,6 +220,46 @@ const SimpleMap = ({
         });
 
         olMap.addLayer(vectorLayer);
+        setMap(olMap);
+
+        let start: number;
+        const duration = 5000; // 5 seconds per segment
+
+        const animate = (timestamp: any) => {
+          if (!start) start = timestamp;
+          const elapsed = timestamp - start;
+          const fraction = elapsed / duration;
+
+          if (fraction <= 1) {
+            const index = Math.floor(fraction * (pathCoordinates.length - 1));
+            const nextIndex = Math.min(index + 1, pathCoordinates.length - 1);
+
+            const fromCoord = pathCoordinates[index];
+            const toCoord = pathCoordinates[nextIndex];
+
+            const x =
+              fromCoord[0] +
+              (toCoord[0] - fromCoord[0]) *
+                easeOut(fraction % (1 / (pathCoordinates.length - 1)));
+            const y =
+              fromCoord[1] +
+              (toCoord[1] - fromCoord[1]) *
+                easeOut(fraction % (1 / (pathCoordinates.length - 1)));
+
+            droneFeature.getGeometry()?.setCoordinates([x, y]);
+            olMap.render();
+
+            animationRef.current = requestAnimationFrame(animate);
+          }
+        };
+
+        animationRef.current = requestAnimationFrame(animate);
+
+        return () => {
+          if (animationRef.current) {
+            cancelAnimationFrame(animationRef.current);
+          }
+        };
 
         // // Add overlay for the popup
         // const popupOverlay = new Overlay({
@@ -262,6 +309,14 @@ const SimpleMap = ({
       },
     );
   }, [center, radius, coPoints, path]);
+
+  useEffect(() => {
+    if (!map) return;
+
+    // Perbarui center ketika parameter center berubah
+    const centerStationCoor = fromLonLat([+center.lat, +center.lon]);
+    map.getView().setCenter(centerStationCoor);
+  }, [center]);
 
   return (
     <div className="relative h-[75vh] w-full rounded-md bg-gradient-to-br from-white via-slate-50 to-white">
