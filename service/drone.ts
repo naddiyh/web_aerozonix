@@ -27,12 +27,11 @@ const convertToInterface = <T>(doc: DocumentData): T => {
 
 // Drone methods
 const getAllDrones = async () => {
-  console.log("Getting all drones from Firestore...");
   try {
     const dronesCollection = collection(db, "drones");
     const snapshot = await getDocs(dronesCollection);
     console.log("Snapshot retrieved:", snapshot);
-    return snapshot.docs.map((doc: any) => convertToInterface<IDrone>(doc));
+    return snapshot.docs.map((doc) => convertToInterface<IDrone>(doc));
   } catch (error) {
     console.error("Error getting all drones from Firestore:", error);
     throw error;

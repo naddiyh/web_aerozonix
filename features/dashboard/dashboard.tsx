@@ -1,6 +1,5 @@
 "use client";
 
-// import dynamic from "next/dynamic";
 import { History } from "../Statistic/components/History";
 import { TotalLocation } from "./atom/TotalLocation";
 import { TotalProduct } from "./atom/TotalProduct";
@@ -8,12 +7,6 @@ import { CurrentPollutant } from "./CurrentPollutant";
 import { PredictionCO } from "./PredictionCO";
 import { GraphCO } from "../Statistic";
 
-// const GraphCO = dynamic(
-//   () => import("@/features/Statistic").then((mod) => mod.GraphCO),
-//   {
-//     ssr: false,
-//   },
-// );
 export const DashboardPage = () => {
   return (
     <main className="grid grid-cols-1 gap-10 p-10">

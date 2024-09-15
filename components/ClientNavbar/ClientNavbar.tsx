@@ -3,8 +3,8 @@ import Image from "next/image";
 export const ClientNavbar = () => {
   return (
     <nav className="fixed left-0 right-0 top-0 z-20 w-full bg-white px-28 py-4 shadow-custom">
-      <section className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <section className="flex items-center md:justify-between">
+        <div className="flex items-center md:gap-2">
           <Image src="/svg/logo.svg" alt="" height={50} width={50} />
           <p className="text-text-l font-semibold text-secondary-darkteal">
             Aerozonix
@@ -14,7 +14,7 @@ export const ClientNavbar = () => {
             Makassar
           </p>
         </div>
-        <div className="flex gap-8">
+        <div className="hidden gap-8 md:flex">
           <Link
             href="/"
             className="font-medium text-secondary-darkteal hover:opacity-60"
@@ -28,7 +28,7 @@ export const ClientNavbar = () => {
             Air Quality Map
           </Link>
           <Link
-            href="/"
+            href="/statistic"
             className="font-medium text-secondary-darkteal hover:opacity-60"
           >
             Statistic
