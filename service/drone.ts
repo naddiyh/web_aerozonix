@@ -7,6 +7,8 @@ import {
   addDoc,
   deleteDoc,
   DocumentData,
+  query,
+  orderBy,
 } from "firebase/firestore";
 
 const convertToInterface = <T>(doc: DocumentData): T => {
@@ -28,7 +30,7 @@ const convertToInterface = <T>(doc: DocumentData): T => {
 // Drone methods
 const getAllDrones = async () => {
   try {
-    const dronesCollection = collection(db, "drones");
+    const dronesCollection = query(collection(db, "drones"), orderBy("code"));
     const snapshot = await getDocs(dronesCollection);
     console.log("Snapshot retrieved:", snapshot);
     return snapshot.docs.map((doc) => convertToInterface<IDrone>(doc));
